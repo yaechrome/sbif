@@ -19,14 +19,14 @@ def url_valor_recurso_meses(nombre_recurso, fechaInicio, fechaFin):
 recursos = {
     "uf": ('uf', 'UFs', 'Valor UF'),
     "usd": ('dolar', 'Dolares', 'Valor dólar'),
+    "tmc": ('tmc', 'TMCs', 'Valor TMC')
 }
+
 def valor_recurso_meses(nombre_recurso, fechaInicio, fechaFin):
     (url_recurso, llave_recurso, _) = recursos[nombre_recurso]
     url = url_valor_recurso_meses(url_recurso, fechaInicio, fechaFin)
     r = requests.get(url)
-    
     return r.json()[llave_recurso]
-
 
 def valores_rango_dias(valores_rango_meses, rango_dias):
     return [x for x in valores_rango_meses if esta_en_rango(x, rango_dias)]
@@ -40,10 +40,24 @@ def esta_en_rango(fecha_valor, rango_dias):
 def recurso():
     fecha_inicio = request.args.get('fecha_inicio', '')
     fecha_fin = request.args.get('fecha_fin', '')
+    if fecha_fin < fecha_inicio:
+        error = "Debe seleccionar rango de fecha válido"
+        return render_template(
+            'holamundo.html',
+            error=error,
+        )
     nombre_recurso = request.args.get('nombre_recurso', '')
     rango_dias = (fecha_inicio, fecha_fin)
     valores_rango_meses = valor_recurso_meses(nombre_recurso, dateutil.parser.parse(fecha_inicio), dateutil.parser.parse(fecha_fin))
     valores_por_dia = valores_rango_dias(valores_rango_meses, rango_dias)
+    
+    if not valores_por_dia:
+        error = "No hay datos en el rango seleccionado"
+        return render_template(
+            'holamundo.html',
+            error=error,
+        )
+        
 
     valores = [parse_chilean_number(x["Valor"]) for x in valores_por_dia]
     minimo = min(valores)

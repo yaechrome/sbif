@@ -10,12 +10,14 @@
     <input type="radio" name="nombre_recurso" value="uf" checked>
     buscar dolar:
     <input type="radio" name="nombre_recurso" value="usd">
+    buscar TMC:
+    <input type="radio" name="nombre_recurso" value="tmc">
     
     <input type="submit" value="Buscar">
 </form>
 
-{% if name %}
-  <h1>Hello {{ name }}!</h1>
+{% if error %}
+  <h1> {{ error }}!</h1>
 {% else %}
-  <h1>Hello, World!</h1>
+  <h1></h1>
 {% endif %}
