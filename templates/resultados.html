@@ -31,6 +31,25 @@
     </head>
     <body>
         <table border="1">
+            <thead>
+                <tr>
+                    <th>Promedio</th>
+                    <th>Mínimo</th>
+                    <th>Máximo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ promedio }}</td>
+                    <td>{{ minimo }}</td>
+                    <td>{{ maximo }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <canvas id="myChart" class="elemento-formulario"></canvas>
+
+        <table border="1">
         <thead>
             <tr>
                 <th>Fecha </th>
@@ -46,24 +65,5 @@
             {% endfor %}
         </tbody>
         </table>
-
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Promedio: </th>
-                    <th>Mínimo</th>
-                    <th>Máximo</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ promedio }}</td>
-                    <td>{{ minimo }}</td>
-                    <td>{{ maximo }}</td>
-                </tr>
-
-            </tbody>
-        </table>
-        <canvas id="myChart" class="elemento-formulario"></canvas>
     </body>
 </html>

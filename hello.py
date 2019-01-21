@@ -54,7 +54,7 @@ def recurso():
         'resultados.html',
         minimo=minimo,
         maximo=maximo,
-        promedio=promedio,
+        promedio=round(promedio,3),
         valores_por_dia=valores_por_dia,
         nombre_grafico=nombre_grafico,
         all_dates=[x["Fecha"] for x in valores_por_dia],
