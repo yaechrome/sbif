@@ -1,0 +1,69 @@
+<!doctype html>
+
+<html>
+    <head>
+        <title>Resultados</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.js"></script>
+        <script>
+            window.onload = function () {
+                var ctx = document.getElementById("myChart");
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: {{ all_dates | safe }},
+                        datasets: [
+                            {
+                                label: '{{ nombre_grafico }}',
+                                data: {{ all_values }},
+                                backgroundColor: [
+                                    'rgba(54, 162, 235, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(54, 162, 235, 1)'
+                                ],
+                                borderWidth: 1
+                            }
+                        ]
+                    }
+                });
+            };
+        </script>
+    </head>
+    <body>
+        <table border="1">
+        <thead>
+            <tr>
+                <th>Fecha </th>
+                <th>Valor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for valor in valores_por_dia %}
+            <tr>
+                <td>{{ valor["Fecha"] }}</td>
+                <td>{{ valor["Valor"] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Promedio: </th>
+                    <th>Mínimo</th>
+                    <th>Máximo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ promedio }}</td>
+                    <td>{{ minimo }}</td>
+                    <td>{{ maximo }}</td>
+                </tr>
+
+            </tbody>
+        </table>
+        <canvas id="myChart" class="elemento-formulario"></canvas>
+    </body>
+</html>

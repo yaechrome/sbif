@@ -16,12 +16,12 @@ def url_valor_recurso_meses(nombre_recurso, fechaInicio, fechaFin):
     
     return url
 
+recursos = {
+    "uf": ('uf', 'UFs', 'Valor UF'),
+    "usd": ('dolar', 'Dolares', 'Valor dólar'),
+}
 def valor_recurso_meses(nombre_recurso, fechaInicio, fechaFin):
-    recursos = {
-        "uf": ('uf', 'UFs'),
-        "usd": ('dolar', 'Dolares'),
-    }
-    (url_recurso, llave_recurso) = recursos[nombre_recurso]
+    (url_recurso, llave_recurso, _) = recursos[nombre_recurso]
     url = url_valor_recurso_meses(url_recurso, fechaInicio, fechaFin)
     r = requests.get(url)
     
@@ -43,9 +43,29 @@ def recurso():
     nombre_recurso = request.args.get('nombre_recurso', '')
     rango_dias = (fecha_inicio, fecha_fin)
     valores_rango_meses = valor_recurso_meses(nombre_recurso, dateutil.parser.parse(fecha_inicio), dateutil.parser.parse(fecha_fin))
-    x = valores_rango_dias(valores_rango_meses, rango_dias)
-    return jsonify(x)
+    valores_por_dia = valores_rango_dias(valores_rango_meses, rango_dias)
 
+    valores = [parse_chilean_number(x["Valor"]) for x in valores_por_dia]
+    minimo = min(valores)
+    maximo = max(valores)
+    promedio = mean(valores)
+    (_, _, nombre_grafico) = recursos[nombre_recurso]
+    return render_template(
+        'resultados.html',
+        minimo=minimo,
+        maximo=maximo,
+        promedio=promedio,
+        valores_por_dia=valores_por_dia,
+        nombre_grafico=nombre_grafico,
+        all_dates=[x["Fecha"] for x in valores_por_dia],
+        all_values=valores
+    )
+
+def mean(array):
+    return sum(array) / len(array)
+
+def parse_chilean_number(x):
+    return float(x.replace('.', '').replace(',', '.'))
 
 @app.route("/")
 def main():
