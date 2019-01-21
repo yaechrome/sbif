@@ -1,0 +1,21 @@
+<!doctype html>
+<title>Hello from Flask</title>
+<form action="/recurso">
+    fecha inicio:
+    <input type="date" name="fecha_inicio" value="{{ last_week }}">
+    fecha término:
+    <input type="date" name="fecha_fin" value="{{ today }}">
+
+    buscar uf:
+    <input type="radio" name="nombre_recurso" value="uf" checked>
+    buscar dolar:
+    <input type="radio" name="nombre_recurso" value="usd">
+    
+    <input type="submit" value="Buscar">
+</form>
+
+{% if name %}
+  <h1>Hello {{ name }}!</h1>
+{% else %}
+  <h1>Hello, World!</h1>
+{% endif %}
