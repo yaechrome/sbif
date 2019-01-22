@@ -26,7 +26,7 @@ def valor_recurso_meses(nombre_recurso, fechaInicio, fechaFin):
     (url_recurso, llave_recurso, _) = recursos[nombre_recurso]
     url = url_valor_recurso_meses(url_recurso, fechaInicio, fechaFin)
     r = requests.get(url)
-    return r.json()[llave_recurso]
+    return r.json().get(llave_recurso, [])
 
 def valores_rango_dias(valores_rango_meses, rango_dias):
     return [x for x in valores_rango_meses if esta_en_rango(x, rango_dias)]
