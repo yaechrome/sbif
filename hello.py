@@ -3,8 +3,9 @@ import requests
 from datetime import datetime, timedelta
 app = Flask(__name__)
 
+from bonus import preparar_datos
 import dateutil.parser
-
+import json
 
 def url_valor_recurso_meses(nombre_recurso, fechaInicio, fechaFin):
     start_year  = fechaInicio.strftime("%Y")
@@ -58,7 +59,15 @@ def recurso():
             error=error,
         )
         
-
+    if nombre_recurso == 'tmc':
+        datos_preparados = preparar_datos(valores_por_dia)
+        return render_template(
+            'resultados_tmc.html',
+            fechas=json.dumps(datos_preparados["fechas"]),
+            datasets=json.dumps(datos_preparados["datasets"])
+        )
+        
+    
     valores = [parse_chilean_number(x["Valor"]) for x in valores_por_dia]
     minimo = min(valores)
     maximo = max(valores)
@@ -86,4 +95,3 @@ def main():
     today = datetime.now()
     last_week = today - timedelta(days=7)
     return render_template('holamundo.html', today=today.strftime("%Y-%m-%d"), last_week=last_week.strftime("%Y-%m-%d"))
-    

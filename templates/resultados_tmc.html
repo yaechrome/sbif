@@ -1,0 +1,42 @@
+<!doctype html>
+
+<html>
+    <head>
+        <title>Resultados</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.js"></script>
+        <script>
+            window.onload = function () {
+                var ctx = document.getElementById("myChart");
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: {{ fechas | safe }},
+                        datasets: {{ datasets | safe }}
+                    }
+                });
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myChart" class="elemento-formulario"></canvas>
+        <form action="/">
+            <input type="submit" value="Volver a Consultas">
+        </form>
+        <!-- <table border="1">
+        <thead>
+            <tr>
+                <th>Código </th>
+                <th>Tipo de Operación</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dato in tipo_titulos %}
+            <tr>
+                <td>{{ valor["Tipo"] }}</td>
+                <td>{{ valor["Titulo"] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table> -->
+    </body>
+</html>
