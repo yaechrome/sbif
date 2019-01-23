@@ -22,17 +22,29 @@ def crear_datasets(d, fechas):
     datasets = []
     for tipo, datos in d.items():
         porcentajes = porcentajes_por_tipo(datos, fechas)
+        maximo_porcentaje = max([porcentaje for porcentaje in porcentajes if porcentaje is not None])
+        
         data = {
             "data":  porcentajes,
             "texto": [titulo(dato) for dato in datos],
             "label":  "Tipo " + tipo,
-            "borderColor":  colores[0],
+            "borderColor": colores[0],
             "fill": False,
+            "tension": 0,
+            "pointRadius": [radio_punto(porcentaje, maximo_porcentaje) for porcentaje in porcentajes],
+            "pointHoverRadius": [radio_punto(porcentaje, maximo_porcentaje) for porcentaje in porcentajes],
+            "pointBackgroundColor": colores[0]
         }
         colores.append(colores.pop(0))
         datasets.append(data)
         
     return datasets
+    
+def radio_punto(porcentaje, maximo):
+    if porcentaje == maximo:
+        return 10
+    else:
+        return 2
 
 def titulo(dato):
     titulo = dato["Titulo"]

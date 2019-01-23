@@ -12,6 +12,21 @@
                     data: {
                         labels: {{ fechas | safe }},
                         datasets: {{ datasets | safe }}
+                    },
+                    options: {
+                      tooltips: {
+                          callbacks: {
+                              label: function(tooltipItem, data) {
+                                  var percent = data['datasets'][tooltipItem['datasetIndex']]['data'][tooltipItem['index']];
+                                  return "Interés: " + percent + '%';
+                              },
+                              afterLabel: function(tooltipItem, data) {
+                                  var tipo = data['datasets'][tooltipItem['datasetIndex']]["label"];
+                                  var titulo = data['datasets'][0]['texto'][tooltipItem['index']];
+                                  return tipo + ": " + titulo;
+                              }
+                          }
+                      }
                     }
                 });
             };
