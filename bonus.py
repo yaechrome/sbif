@@ -64,7 +64,8 @@ def porcentajes_por_tipo(datos_por_tipo, fechas):
     porcentajes = []
     for fecha in fechas:
         valor = obtener_valor(datos_por_tipo, fecha)
-        porcentajes.append(valor)
+        porcentaje = parse_number(valor)
+        porcentajes.append(porcentaje)
     return porcentajes
 
 def obtener_valor(datos, fecha):
@@ -72,3 +73,6 @@ def obtener_valor(datos, fecha):
         if dato["Fecha"] == fecha:
             return dato["Valor"]
     return None
+    
+def parse_number(x):
+    return float(x.replace(',', '.'))
