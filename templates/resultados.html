@@ -15,15 +15,12 @@
                             {
                                 label: '{{ nombre_grafico }}',
                                 data: {{ all_values }},
-                                backgroundColor: [
-                                    'rgba(54, 162, 235, 0.2)'
-                                ],
-                                borderColor: [
-                                    'rgba(54, 162, 235, 1)'
-                                ],
+                                fill: false,
+                                borderColor: 'rgba(54, 162, 235, 1)',
                                 borderWidth: 1,
                                 spanGaps: true,
-                                tension: 0
+                                tension: 0,
+                                pointBackgroundColor: 'rgba(54, 162, 235, 1)'
                             }
                         ]
                     }
