@@ -1,12 +1,14 @@
-colores = ['rgba(255,99,132,1)','rgba(54, 162, 235, 1)','rgba(255, 206, 86, 1)','rgba(75, 192, 192, 1)','rgba(153, 102, 255, 1)','rgba(255, 159, 64, 1)','rgba(255,150,134,1)','rgba(56, 60, 250, 1)','rgba(10, 255, 99, 1)','rgba(90, 200, 75, 1)','rgba(200, 102, 200, 1)','rgba(0, 30, 255, 1)']
+colores = ['rgba(255,99,132,1)','rgba(54, 162, 235, 1)','rgba(255, 206, 86, 1)','rgba(75, 192, 192, 1)','rgba(153, 102, 255, 1)','rgba(255, 159, 64, 1)','rgba(255,150,134,1)','rgba(50, 90, 200, 1)','rgba(10, 255, 99, 1)','rgba(90, 200, 75, 1)','rgba(200, 102, 200, 1)','rgba(0, 30, 255, 1)']
 
 def preparar_datos(x):
     fechas = fechas_unicas(x)
     d = agrupar_por_tipo(x)
     datasets = crear_datasets(d,fechas)
+    datos_tabla = [dato for tipo, dataset in d.items() for dato in dataset]
     return {
         "datasets": datasets,
-        "fechas": fechas
+        "fechas": fechas,
+        "datos_tabla": datos_tabla
     }
 
 def agrupar_por_tipo(x):
@@ -42,7 +44,7 @@ def crear_datasets(d, fechas):
     
 def radio_punto(porcentaje, maximo):
     if porcentaje == maximo:
-        return 10
+        return 8
     else:
         return 2
 

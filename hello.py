@@ -64,7 +64,8 @@ def recurso():
         return render_template(
             'resultados_tmc.html',
             fechas=json.dumps(datos_preparados["fechas"]),
-            datasets=json.dumps(datos_preparados["datasets"])
+            datasets=json.dumps(datos_preparados["datasets"]),
+            datos_tabla=datos_preparados["datos_tabla"]
         )
         
     

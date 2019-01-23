@@ -41,21 +41,27 @@
         <form action="/">
             <input type="submit" value="Volver a Consultas">
         </form>
-        <!-- <table border="1">
+        <table border="1">
         <thead>
             <tr>
-                <th>Código </th>
-                <th>Tipo de Operación</th>
+                <th>Código Tipo</th>
+                <th>Título</th>
+                <th>Subtítulo</th>
+                <th>Valor</th>
+                <th>Fecha</th>
             </tr>
         </thead>
         <tbody>
-            {% for dato in tipo_titulos %}
+            {% for dato in datos_tabla %}
             <tr>
-                <td>{{ valor["Tipo"] }}</td>
-                <td>{{ valor["Titulo"] }}</td>
+                <td>{{ dato["Tipo"] }}</td>
+                <td>{{ dato["Titulo"] }}</td>
+                <td>{{ dato["SubTitulo"] }}</td>
+                <td>{{ dato["Valor"] }}</td>
+                <td>{{ dato["Fecha"] }}</td>
             </tr>
             {% endfor %}
         </tbody>
-        </table> -->
+        </table>
     </body>
 </html>
