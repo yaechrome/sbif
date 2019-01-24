@@ -1,5 +1,5 @@
 # SBIF 👌🏻
-Esta aplicación es para poder ver los valores de la UF, Dólar y TMC (Tasa Máxima Convencional) desde la api del SBIF (Superintendencia de Bancos e Instituciones Financieras)
+Esta aplicación es para poder ver los valores de la UF, Dólar y TMC (Tasa Máxima Convencional) desde la api de la SBIF (Superintendencia de Bancos e Instituciones Financieras)
 
 ## Requerimientos
 
