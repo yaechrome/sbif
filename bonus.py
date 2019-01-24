@@ -71,12 +71,11 @@ def valores_para_cada_fecha(dato, fechas):
     valores = []
     for fecha in fechas:
         valor = valor_para_una_fecha(dato, fecha)
-        valor = float(valor)
         valores.append(valor)
     return valores
 
 def valor_para_una_fecha(datos, fecha):
     for dato in datos:
         if dato["Fecha"] == fecha:
-            return dato["Valor"]
+            return float(dato["Valor"])
     return None
