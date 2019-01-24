@@ -4,6 +4,7 @@
     <head>
         <title>Resultados</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.js"></script>
+        <script src="static/sorttable.js"></script>
         <script>
             window.onload = function () {
                 var ctx = document.getElementById("myChart");
@@ -27,6 +28,18 @@
                 });
             };
         </script>
+        <style>
+            /* Sortable tables */
+            table.sortable thead {
+                background-color:#eee;
+                color:#666666;
+                font-weight: bold;
+                cursor: default;
+            }
+            table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
+                content: " ⇳" 
+            }
+        </style>
     </head>
     <body>
         <table border="1">
@@ -49,7 +62,7 @@
         <form action="/">
             <input type="submit" value="Volver a Consultas">
         </form>
-        <table border="1">
+        <table class="sortable" border="1">
         <thead>
             <tr>
                 <th>Fecha </th>
@@ -59,8 +72,8 @@
         <tbody>
             {% for dato in datos %}
             <tr>
-                <td>{{ dato["Fecha"] }}</td>
-                <td>{{ dato["Valor"] }}</td>
+                <td width="30%">{{ dato["Fecha"] }}</td>
+                <td width="30%">${{ dato["Valor"] }}</td>
             </tr>
             {% endfor %}
         </tbody>
