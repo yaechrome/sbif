@@ -4,6 +4,7 @@
     <head>
         <title>Resultados</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.js"></script>
+        <script src="static/sorttable.js"></script>
         <script>
             window.onload = function () {
                 var ctx = document.getElementById("myChart");
@@ -35,30 +36,42 @@
                 });
             };
         </script>
+        <style>
+            /* Sortable tables */
+            table.sortable thead {
+                background-color:#eee;
+                color:#666666;
+                font-weight: bold;
+                cursor: default;
+            }
+            table.sortable th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after { 
+                content: " ⇳" 
+            }
+        </style>
     </head>
     <body>
         <canvas id="myChart" class="elemento-formulario"></canvas>
         <form action="/">
             <input type="submit" value="Volver a Consultas">
         </form>
-        <table border="1">
+        <table class="sortable" border="1">
         <thead>
             <tr>
                 <th>Código Tipo</th>
+                <th>Interés</th>
                 <th>Título</th>
                 <th>Subtítulo</th>
-                <th>Valor</th>
                 <th>Fecha</th>
             </tr>
         </thead>
         <tbody>
             {% for dato in datos_tabla %}
             <tr>
-                <td>{{ dato["Tipo"] }}</td>
-                <td>{{ dato["Titulo"] }}</td>
-                <td>{{ dato["SubTitulo"] }}</td>
-                <td>{{ dato["Valor"] }}</td>
-                <td>{{ dato["Fecha"] }}</td>
+                <td width="5%">{{ dato["Tipo"] }}</td>
+                <td width="10%">{{ dato["Valor"] }}%</td>
+                <td width="30%">{{ dato["Titulo"] }}</td>
+                <td width="40%">{{ dato["SubTitulo"] }}</td>
+                <td width="15%">{{ dato["Fecha"] }}</td>
             </tr>
             {% endfor %}
         </tbody>

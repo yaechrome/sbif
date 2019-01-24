@@ -4,7 +4,7 @@ def preparar_datos(x):
     fechas = fechas_unicas(x)
     d = agrupar_por_tipo(x)
     datasets = crear_datasets(d,fechas)
-    datos_tabla = [dato for tipo, dataset in d.items() for dato in dataset]
+    datos_tabla = sorted(x, key=lambda x: x['Tipo'])
     return {
         "datasets": datasets,
         "fechas": fechas,
