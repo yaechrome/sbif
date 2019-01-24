@@ -57,10 +57,10 @@
             </tr>
         </thead>
         <tbody>
-            {% for valor in valores_por_dia %}
+            {% for dato in datos %}
             <tr>
-                <td>{{ valor["Fecha"] }}</td>
-                <td>{{ valor["Valor"] }}</td>
+                <td>{{ dato["Fecha"] }}</td>
+                <td>{{ dato["Valor"] }}</td>
             </tr>
             {% endfor %}
         </tbody>

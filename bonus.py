@@ -1,49 +1,53 @@
-colores = ['rgba(255,99,132,1)','rgba(54, 162, 235, 1)','rgba(255, 206, 86, 1)','rgba(75, 192, 192, 1)','rgba(153, 102, 255, 1)','rgba(255, 159, 64, 1)','rgba(255,150,134,1)','rgba(50, 90, 200, 1)','rgba(10, 255, 99, 1)','rgba(90, 200, 75, 1)','rgba(200, 102, 200, 1)','rgba(0, 30, 255, 1)']
+def preparar_datos(datos):
+    fechas = fechas_unicas(datos)
+    datos_por_tipo = agrupar_por_tipo(datos)
+    datasets = crear_datasets(datos_por_tipo, fechas)
+    datos_tabla = sorted(datos, key=lambda dato: dato['Tipo'])
+    
+    return (fechas, datasets, datos_tabla)
 
-def preparar_datos(x):
-    fechas = fechas_unicas(x)
-    d = agrupar_por_tipo(x)
-    datasets = crear_datasets(d,fechas)
-    datos_tabla = sorted(x, key=lambda x: x['Tipo'])
-    return {
-        "datasets": datasets,
-        "fechas": fechas,
-        "datos_tabla": datos_tabla
-    }
-
-def agrupar_por_tipo(x):
+def agrupar_por_tipo(datos):
     d = {}
-    for dato in x:
+    for dato in datos:
         tipo = dato["Tipo"]
-        valores = d.get(tipo, [])
-        valores.append(dato)
-        d[tipo] = valores
+        datos_del_tipo = d.get(tipo, [])
+        datos_del_tipo.append(dato)
+        d[tipo] = datos_del_tipo
     return d
 
-def crear_datasets(d, fechas):
+colores = ['rgba(255,99,132,1)','rgba(54, 162, 235, 1)','rgba(255, 206, 86, 1)','rgba(75, 192, 192, 1)','rgba(153, 102, 255, 1)','rgba(255, 159, 64, 1)','rgba(255,150,134,1)','rgba(50, 90, 200, 1)','rgba(10, 255, 99, 1)','rgba(90, 200, 75, 1)','rgba(200, 102, 200, 1)','rgba(0, 30, 255, 1)']
+def siguiente_color():
+    color = colores.pop(0)
+    colores.append(color)
+    return color
+
+def crear_datasets(datos_por_tipo, fechas):
     datasets = []
-    for tipo, datos in d.items():
-        porcentajes = porcentajes_por_tipo(datos, fechas)
-        maximo_porcentaje = max([porcentaje for porcentaje in porcentajes if porcentaje is not None])
+    
+    for tipo, datos in datos_por_tipo.items():
+        valores = valores_para_cada_fecha(datos, fechas)
+        maximo_valor = max([valor for valor in valores if valor is not None])
+        color = siguiente_color()
+        radios_puntos = [radio_punto(valor, maximo_valor) for valor in valores]
         
-        data = {
-            "data":  porcentajes,
+        datasets.append({
+            "data":  valores,
             "texto": [titulo(dato) for dato in datos],
             "label":  "Tipo " + tipo,
-            "borderColor": colores[0],
+            "borderColor": color,
             "fill": False,
             "tension": 0,
-            "pointRadius": [radio_punto(porcentaje, maximo_porcentaje) for porcentaje in porcentajes],
-            "pointHoverRadius": [radio_punto(porcentaje, maximo_porcentaje) for porcentaje in porcentajes],
-            "pointBackgroundColor": colores[0]
-        }
-        colores.append(colores.pop(0))
-        datasets.append(data)
+            "pointRadius": radios_puntos,
+            "pointHoverRadius": radios_puntos,
+            "pointBackgroundColor": color
+        })
         
     return datasets
     
-def radio_punto(porcentaje, maximo):
-    if porcentaje == maximo:
+def radio_punto(valor, maximo):
+    # para destacar el punto,
+    # se usa un radio mayor si es el con maximo valor
+    if valor == maximo:
         return 8
     else:
         return 2
@@ -51,6 +55,7 @@ def radio_punto(porcentaje, maximo):
 def titulo(dato):
     titulo = dato["Titulo"]
     subtitulo = dato["SubTitulo"]
+    
     arreglo = []
     if titulo:
         arreglo.append(titulo)
@@ -58,23 +63,20 @@ def titulo(dato):
         arreglo.append(subtitulo)
     return " - ".join(arreglo)
 
-def fechas_unicas(x):
-    fechas = [dato["Fecha"] for dato in x]
+def fechas_unicas(datos):
+    fechas = [dato["Fecha"] for dato in datos]
     return sorted(set(fechas))
 
-def porcentajes_por_tipo(datos_por_tipo, fechas):
-    porcentajes = []
+def valores_para_cada_fecha(dato, fechas):
+    valores = []
     for fecha in fechas:
-        valor = obtener_valor(datos_por_tipo, fecha)
-        porcentaje = parse_number(valor)
-        porcentajes.append(porcentaje)
-    return porcentajes
+        valor = valor_para_una_fecha(dato, fecha)
+        valor = float(valor)
+        valores.append(valor)
+    return valores
 
-def obtener_valor(datos, fecha):
+def valor_para_una_fecha(datos, fecha):
     for dato in datos:
         if dato["Fecha"] == fecha:
             return dato["Valor"]
     return None
-    
-def parse_number(x):
-    return float(x.replace(',', '.'))
