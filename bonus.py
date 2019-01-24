@@ -1,3 +1,5 @@
+from colorsys import hls_to_rgb
+
 def preparar_datos(datos):
     fechas = fechas_unicas(datos)
     datos_por_tipo = agrupar_por_tipo(datos)
@@ -15,19 +17,32 @@ def agrupar_por_tipo(datos):
         d[tipo] = datos_del_tipo
     return d
 
-colores = ['rgba(255,99,132,1)','rgba(54, 162, 235, 1)','rgba(255, 206, 86, 1)','rgba(75, 192, 192, 1)','rgba(153, 102, 255, 1)','rgba(255, 159, 64, 1)','rgba(255,150,134,1)','rgba(50, 90, 200, 1)','rgba(10, 255, 99, 1)','rgba(90, 200, 75, 1)','rgba(200, 102, 200, 1)','rgba(0, 30, 255, 1)']
-def siguiente_color():
-    color = colores.pop(0)
-    colores.append(color)
-    return color
+def siguiente_color(angulo_anterior):
+    # Este angulo viene del "golden ratio" o número áureo
+    # (razón entre números de la serie de fibonacci)
+    # Al sumar esta cantidad de grados, nos dan siempre ángulos distintos
+    # y bien separados entre sí.
+    # En este caso ocupamos esos ángulos como el "matiz" (hue) de un color
+    # manteniendo la saturación y luminocidad fijas.
+    angulo_aureo = 137.5
+    # Se transforma el color en RGB, porque la librería chart.js no soporta
+    # colores en el formato hsl(…).
+    (_r, _g, _b) = hls_to_rgb(angulo_anterior / 360, 0.7, 1.0)
+    r = round(_r * 255)
+    g = round(_g * 255)
+    b = round(_b * 255)
+    color = f'rgb({r}, {g}, {b})'
+    angulo_nuevo = (angulo_anterior + angulo_aureo) % 360
+    return (color, angulo_nuevo)
 
 def crear_datasets(datos_por_tipo, fechas):
     datasets = []
     
+    angulo_color = 235
     for tipo, datos in datos_por_tipo.items():
         valores = valores_para_cada_fecha(datos, fechas)
         maximo_valor = max([valor for valor in valores if valor is not None])
-        color = siguiente_color()
+        (color, angulo_color) = siguiente_color(angulo_color)
         radios_puntos = [radio_punto(valor, maximo_valor) for valor in valores]
         
         datasets.append({
