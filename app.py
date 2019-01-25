@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, redirect, url_for
 import requests
 from datetime import datetime, timedelta
 app = Flask(__name__)
@@ -43,21 +43,20 @@ def recurso():
     fecha_fin = request.args.get('fecha_fin', '')
     if fecha_fin < fecha_inicio:
         error = "Debe seleccionar rango de fecha válido"
-        return render_template(
-            'index.html',
-            error = error,
-        )
+        return redirect(url_for('.index', error = error))
+        
     nombre_recurso = request.args.get('nombre_recurso', '')
     rango_dias = (fecha_inicio, fecha_fin)
-    datos_en_rango_meses = datos_rango_meses(nombre_recurso, dateutil.parser.parse(fecha_inicio), dateutil.parser.parse(fecha_fin))
-    datos_en_rango_dias = datos_rango_dias(datos_en_rango_meses, rango_dias)
+    try:
+        datos_en_rango_meses = datos_rango_meses(nombre_recurso, dateutil.parser.parse(fecha_inicio), dateutil.parser.parse(fecha_fin))
+        datos_en_rango_dias = datos_rango_dias(datos_en_rango_meses, rango_dias)
+    except:
+        error = "Debe ingresar fecha en formato YYYY-MM-DD"
+        return redirect(url_for('.index', error = error))
     
     if not datos_en_rango_dias:
         error = "No hay datos en el rango seleccionado"
-        return render_template(
-            'index.html',
-            error = error,
-        )
+        return redirect(url_for('.index', error = error))
         
     if nombre_recurso == 'tmc':
         (fechas, datasets, datos_tabla) = preparar_datos(datos_en_rango_dias)
@@ -95,8 +94,10 @@ def transformar_numero(numero):
 def index():
     today = datetime.now()
     last_week = today - timedelta(days = 7)
+    error = request.args.get('error')
     return render_template(
         'index.html', 
         today = today.strftime("%Y-%m-%d"), 
-        last_week = last_week.strftime("%Y-%m-%d")
+        last_week = last_week.strftime("%Y-%m-%d"),
+        error = error
     )
