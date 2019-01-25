@@ -1,41 +1,24 @@
-from flask import Flask, jsonify, request, render_template, redirect, url_for
-import requests
+from flask import Flask, request, render_template, redirect, url_for
 from datetime import datetime, timedelta
 app = Flask(__name__)
 
 from bonus import preparar_datos
+from recursos import obtener_datos_en_rango_dias, preparar_datos_uf_dolar
 import dateutil.parser
 import json
 
-def url_datos_meses(nombre_recurso, fecha_inicio, fecha_fin):
-    start_year  = fecha_inicio.strftime("%Y")
-    start_month = fecha_inicio.strftime("%m")
-    end_year  = fecha_fin.strftime("%Y")
-    end_month = fecha_fin.strftime("%m")
-    api_key = '195494a39a7ad98fd58e56ed59eaa3adccce7f44'
-    url = f'http://api.sbif.cl/api-sbifv3/recursos_api/{nombre_recurso}/periodo/{start_year}/{start_month}/{end_year}/{end_month}?apikey={api_key}&formato=json&callback=despliegue'
-    
-    return url
+@app.route("/")
+def index():
+    today = datetime.now()
+    last_week = today - timedelta(days = 7)
+    error = request.args.get('error')
+    return render_template(
+        'index.html', 
+        today = today.strftime("%Y-%m-%d"), 
+        last_week = last_week.strftime("%Y-%m-%d"),
+        error = error
+    )
 
-recursos = {
-    "uf": ('uf', 'UFs', 'Valor UF'),
-    "usd": ('dolar', 'Dolares', 'Valor dólar'),
-    "tmc": ('tmc', 'TMCs', 'Valor TMC')
-}
-
-def datos_rango_meses(nombre_recurso, fecha_inicio, fecha_fin):
-    (url_recurso, llave_recurso, _) = recursos[nombre_recurso]
-    url = url_datos_meses(url_recurso, fecha_inicio, fecha_fin)
-    r = requests.get(url)
-    return r.json().get(llave_recurso, [])
-
-def datos_rango_dias(datos_en_rango_meses, rango_dias):
-    return [dato for dato in datos_en_rango_meses if esta_en_rango(dato, rango_dias)]
-    
-def esta_en_rango(dato, rango_dias):
-    (dia_inicio, dia_fin) = rango_dias
-    fecha = dato["Fecha"]
-    return dia_inicio <= fecha and fecha <= dia_fin
 
 @app.route("/recurso")
 def recurso():
@@ -45,14 +28,17 @@ def recurso():
         error = "Debe seleccionar rango de fecha válido"
         return redirect(url_for('.index', error = error))
         
-    nombre_recurso = request.args.get('nombre_recurso', '')
-    rango_dias = (fecha_inicio, fecha_fin)
     try:
-        datos_en_rango_meses = datos_rango_meses(nombre_recurso, dateutil.parser.parse(fecha_inicio), dateutil.parser.parse(fecha_fin))
-        datos_en_rango_dias = datos_rango_dias(datos_en_rango_meses, rango_dias)
+        datetime_inicio = dateutil.parser.parse(fecha_inicio)
+        datetime_fin = dateutil.parser.parse(fecha_fin)
     except:
         error = "Debe ingresar fecha en formato YYYY-MM-DD"
         return redirect(url_for('.index', error = error))
+    
+    nombre_recurso = request.args.get('nombre_recurso', '')
+    rango_dias = (fecha_inicio, fecha_fin)
+
+    datos_en_rango_dias = obtener_datos_en_rango_dias(nombre_recurso, datetime_inicio, datetime_fin, rango_dias)
     
     if not datos_en_rango_dias:
         error = "No hay datos en el rango seleccionado"
@@ -66,38 +52,15 @@ def recurso():
             datasets = json.dumps(datasets),
             datos_tabla = datos_tabla
         )
-        
-    
-    valores = [transformar_numero(dato["Valor"]) for dato in datos_en_rango_dias]
-    minimo = min(valores)
-    maximo = max(valores)
-    promedio = promediar(valores)
-    (_, _, nombre_grafico) = recursos[nombre_recurso]
-    return render_template(
-        'resultados.html',
-        minimo = minimo,
-        maximo = maximo,
-        promedio = round(promedio, 3),
-        datos = datos_en_rango_dias,
-        nombre_grafico = nombre_grafico,
-        all_dates = [dato["Fecha"] for dato in datos_en_rango_dias],
-        all_values = valores
-    )
-
-def promediar(array):
-    return sum(array) / len(array)
-
-def transformar_numero(numero):
-    return float(numero.replace('.', '').replace(',', '.'))
-
-@app.route("/")
-def index():
-    today = datetime.now()
-    last_week = today - timedelta(days = 7)
-    error = request.args.get('error')
-    return render_template(
-        'index.html', 
-        today = today.strftime("%Y-%m-%d"), 
-        last_week = last_week.strftime("%Y-%m-%d"),
-        error = error
-    )
+    else:
+        (valores, fechas, minimo, maximo, promedio, nombre_grafico) = preparar_datos_uf_dolar(nombre_recurso, datos_en_rango_dias)
+        return render_template(
+            'resultados.html',
+            minimo = minimo,
+            maximo = maximo,
+            promedio = round(promedio, 3),
+            datos = datos_en_rango_dias,
+            nombre_grafico = nombre_grafico,
+            all_dates = fechas,
+            all_values = valores
+        )
