@@ -9,13 +9,13 @@ import json
 
 @app.route("/")
 def index():
-    today = datetime.now()
-    last_week = today - timedelta(days = 7)
+    hoy = datetime.now()
+    semana_pasada = hoy - timedelta(days = 7)
     error = request.args.get('error')
     return render_template(
         'index.html', 
-        today = today.strftime("%Y-%m-%d"), 
-        last_week = last_week.strftime("%Y-%m-%d"),
+        hoy = hoy.strftime("%Y-%m-%d"), 
+        semana_pasada = semana_pasada.strftime("%Y-%m-%d"),
         error = error
     )
 
@@ -60,6 +60,6 @@ def recurso():
             promedio = round(promedio, 3),
             datos = datos_en_rango_dias,
             nombre_grafico = nombre_grafico,
-            all_dates = fechas,
-            all_values = valores
+            fechas = fechas,
+            valores = valores
         )

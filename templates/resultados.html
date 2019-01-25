@@ -12,11 +12,11 @@
                 new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: {{ all_dates | safe }},
+                        labels: {{ fechas | safe }},
                         datasets: [
                             {
                                 label: '{{ nombre_grafico }}',
-                                data: {{ all_values }},
+                                data: {{ valores }},
                                 fill: false,
                                 borderColor: 'rgba(54, 162, 235, 1)',
                                 borderWidth: 1,
@@ -31,7 +31,7 @@
         </script>
         <style>
             /* Sortable tables */
-            table.sortable thead {
+            table thead {
                 background-color:#eee;
                 color:#666666;
                 font-weight: bold;
@@ -53,9 +53,9 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ promedio }}</td>
-                    <td>{{ minimo }}</td>
-                    <td>{{ maximo }}</td>
+                    <td width="30%">{{ promedio }}</td>
+                    <td width="30%">{{ minimo }}</td>
+                    <td width="30%">{{ maximo }}</td>
                 </tr>
             </tbody>
         </table>
