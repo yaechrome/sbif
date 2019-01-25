@@ -19,7 +19,6 @@ def index():
         error = error
     )
 
-
 @app.route("/recurso")
 def recurso():
     fecha_inicio = request.args.get('fecha_inicio', '')
